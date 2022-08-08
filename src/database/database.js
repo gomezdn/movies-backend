@@ -1,3 +1,5 @@
+require('pg');
+
 const { Sequelize } = require('sequelize');
 
 const { DB_DBNAME, DB_USERNAME, DB_PASSWORD, DB_HOST } = process.env;
