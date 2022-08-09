@@ -1,5 +1,5 @@
 const { STRING } = require('sequelize').DataTypes;
-const { db } = require('../database/database');
+const { db } = require('../config/database');
 
 const Movie = db.define(
   'Movie',

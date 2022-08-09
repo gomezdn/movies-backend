@@ -1,12 +1,17 @@
-const { STRING, BOOLEAN } = require('sequelize').DataTypes;
-const { db } = require('../database/database');
+const { STRING, BOOLEAN, INTEGER } = require('sequelize').DataTypes;
+const { db } = require('../config/database');
 
 const User = db.define(
   'User',
   {
+    id: {
+      type: INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     email: {
       type: STRING,
-      primaryKey: true,
+      unique: true,
     },
     username: {
       type: STRING,

@@ -1,5 +1,5 @@
-const { STRING } = require('sequelize').DataTypes;
-const { db } = require('../database/database');
+const { STRING, INTEGER } = require('sequelize').DataTypes;
+const { db } = require('../config/database');
 
 const { Movie } = require('./Movie');
 const { User } = require('./User');
@@ -7,11 +7,11 @@ const { User } = require('./User');
 const UserWatchlist = db.define(
   'UserWatchlist',
   {
-    UserEmail: {
-      type: STRING,
+    UserId: {
+      type: INTEGER,
       references: {
         model: User,
-        key: 'email',
+        key: 'id',
       },
       primaryKey: true,
     },
