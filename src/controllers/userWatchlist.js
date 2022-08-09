@@ -5,7 +5,7 @@ const { User } = require('../models/User');
 async function getUserWatchlist(req, res) {
   try {
     const userMovies = await User.findOne({
-      where: { email: req.params.userEmail },
+      where: { id: req.body.userData.id },
       include: Movie,
     });
     res.status(200).json({ userWatchlist: userMovies?.Movies || [] });
@@ -16,30 +16,25 @@ async function getUserWatchlist(req, res) {
 
 async function addMovieToUserWatchlist(req, res) {
   try {
-    const { id } = req.body;
-    const { userEmail } = req.params;
-    const existingMovie = await Movie.findByPk(id);
+    const { id } = req.body.userData;
+    const { movieId } = req.params;
 
+    const existingMovie = await Movie.findByPk(movieId);
     const alreadyAdded = await UserWatchlist.findOne({
-      where: { MovieId: id, UserEmail: userEmail },
+      where: { MovieId: movieId, UserId: id },
     });
 
-    if (alreadyAdded != null) {
-      res.status(409).json({ message: 'Movie already added to watchlist' });
-    } else if (existingMovie != null) {
-      await UserWatchlist.create({
-        UserEmail: userEmail,
-        MovieId: id,
-      });
-    } else {
+    if (existingMovie == null) {
       await Movie.create(req.body);
+    } else if (alreadyAdded == null) {
       await UserWatchlist.create({
-        UserEmail: userEmail,
-        MovieId: id,
+        UserId: userId,
+        MovieId: movieId,
       });
+      res.status(201).json({ message: 'Movie added to watchlist' });
+    } else {
+      res.status(409).json({ message: 'Movie already in watchlist' });
     }
-
-    res.status(201).json({ message: 'Movie added to watchlist' });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -47,10 +42,11 @@ async function addMovieToUserWatchlist(req, res) {
 
 async function removeMovieFromUserWatchlist(req, res) {
   try {
-    const { id } = req.body;
-    const { userEmail } = req.params;
+    const { id } = req.body.userData;
+    const { movieId } = req.params;
+
     const movieToRemove = await UserWatchlist.findOne({
-      where: { MovieId: id, UserEmail: userEmail },
+      where: { MovieId: movieId, UserId: id },
     });
 
     if (movieToRemove != null) {

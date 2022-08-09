@@ -7,13 +7,19 @@ const {
   removeMovieFromUserWatchlist,
 } = require('../controllers/userWatchlist');
 const { validateUserWatchlist } = require('../validations/userWatchlist');
+const { validateMovie } = require('../validations/movie');
+const { validateToken } = require('../validations/auth');
 
-userWatchlist.get('/:userEmail', getUserWatchlist);
+userWatchlist.get('/', validateToken, getUserWatchlist);
+
 userWatchlist.post(
-  '/:userEmail',
+  '/:movieId',
+  validateToken,
+  validateMovie,
   validateUserWatchlist,
   addMovieToUserWatchlist
 );
-userWatchlist.delete('/:userEmail', removeMovieFromUserWatchlist);
+
+userWatchlist.delete('/:movieId', removeMovieFromUserWatchlist);
 
 module.exports = { userWatchlist };
