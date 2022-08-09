@@ -6,7 +6,7 @@ const {
 const { sendEmail } = require('../utils/emailService');
 const { generateToken, getTokenData } = require('../config/jwt');
 
-function sendConfirmationEmail({ id, email }) {
+async function sendConfirmationEmail({ id, email }) {
   const emailToken = generateToken({ id }, '1h');
   const url = `${process.env.API_BASE_URL}${process.env.API_CONFIRM_ACCOUNT_ENDPOINT}/${emailToken}`;
   const emailBody = `
@@ -21,7 +21,7 @@ function sendConfirmationEmail({ id, email }) {
   </html>
   `;
 
-  sendEmail(email, emailBody, 'Account confirmation');
+  await sendEmail(email, emailBody, 'Account confirmation');
 }
 
 async function signup(req, res) {
@@ -36,14 +36,14 @@ async function signup(req, res) {
         password: await encryptPassword(req.body.password),
       });
 
-      sendConfirmationEmail(newUser);
+      await sendConfirmationEmail(newUser);
 
       res.status(201).json({
         message:
           'User created! Check your inbox (or spam) to activate your account',
       });
     } else if (!existingUser.activated) {
-      sendConfirmationEmail(existingUser);
+      await sendConfirmationEmail(existingUser);
 
       res.status(200).json({
         message:
