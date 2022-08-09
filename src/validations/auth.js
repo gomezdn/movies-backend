@@ -1,4 +1,6 @@
 const Joi = require('@hapi/joi');
+const e = require('express');
+const { getTokenData } = require('../config/jwt');
 
 const signupSchema = new Joi.object({
   username: Joi.string().required().trim(),
@@ -15,4 +17,15 @@ async function validateSignup(req, res, next) {
   }
 }
 
-module.exports = { validateSignup };
+async function validateToken(req, res, next) {
+  const token = req.headers?.Authorization?.split(' ')[1];
+
+  try {
+    req.body = { ...req.body, userData: await getTokenData(token) };
+    next();
+  } catch (e) {
+    res.status(403).json({ message: 'Invalid token' });
+  }
+}
+
+module.exports = { validateSignup, validateToken };
