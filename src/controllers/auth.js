@@ -42,6 +42,13 @@ async function signup(req, res) {
         message:
           'User created! Check your inbox (or spam) to activate your account',
       });
+    }
+    if (!existingUser.activated) {
+      sendConfirmationEmail(existingUser);
+      res.status(200).json({
+        message:
+          'Confirmation email was sent again; please check your inbox or spam',
+      });
     } else {
       res.status(409).json({ message: 'Email already in use' });
     }
