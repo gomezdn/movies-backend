@@ -23,6 +23,10 @@ const UserWatchlist = db.define(
       },
       primaryKey: true,
     },
+    historicalPosition: {
+      type: INTEGER,
+      autoIncrement: true,
+    },
   },
   { timestamps: false }
 );
