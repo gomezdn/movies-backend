@@ -18,13 +18,13 @@ async function validateSignup(req, res, next) {
 }
 
 async function validateToken(req, res, next) {
-  const token = req.headers?.Authorization?.split(' ')[1];
+  const token = req.headers?.authorization?.split(' ')[1];
 
   try {
     req.body = { ...req.body, userData: await getTokenData(token) };
     next();
   } catch (e) {
-    res.status(403).json({ message: 'Invalid token' });
+    res.status(403).json({ message: e.message });
   }
 }
 
