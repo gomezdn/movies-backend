@@ -1,4 +1,4 @@
-const { STRING } = require('sequelize').DataTypes;
+const { STRING, TEXT } = require('sequelize').DataTypes;
 const { db } = require('../config/database');
 
 const Movie = db.define(
@@ -29,7 +29,7 @@ const Movie = db.define(
       allowNull: false,
     },
     overview: {
-      type: STRING,
+      type: TEXT,
       allowNull: false,
     },
   },

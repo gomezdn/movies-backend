@@ -93,7 +93,10 @@ async function login(req, res) {
           'You need to activate your account first; check your inbox or spam',
       });
     } else {
-      const token = generateToken(existingUser);
+      const token = generateToken({
+        ...existingUser,
+        id: String(existingUser.id),
+      });
       res.status(200).json({ username: existingUser.username, token });
     }
   } catch (e) {

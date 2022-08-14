@@ -25,10 +25,12 @@ async function addMovieToUserWatchlist(req, res) {
     });
 
     if (existingMovie == null) {
-      await Movie.create(req.body);
-    } else if (alreadyAdded == null) {
+      await Movie.create(req.body.movieData);
+    }
+
+    if (alreadyAdded == null) {
       await UserWatchlist.create({
-        UserId: userId,
+        UserId: id,
         MovieId: movieId,
       });
       res.status(201).json({ message: 'Movie added to watchlist' });
