@@ -20,6 +20,6 @@ userWatchlist.post(
   addMovieToUserWatchlist
 );
 
-userWatchlist.delete('/:movieId', removeMovieFromUserWatchlist);
+userWatchlist.delete('/:movieId', validateToken, removeMovieFromUserWatchlist);
 
 module.exports = { userWatchlist };
