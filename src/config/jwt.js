@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT_SECRET;
 
-function generateToken(payload, duration) {
+function generateToken(payload) {
   return jwt.sign(
     {
       data: payload,
     },
-    SECRET,
-    { expiresIn: duration || '24h' }
+    SECRET
   );
 }
 
@@ -18,10 +17,9 @@ async function getTokenData(token) {
     if (err) {
       throw new Error(err.message);
     } else {
-      result = decoded.data;
+      result = decoded.data.dataValues;
     }
   });
-
   return result;
 }
 

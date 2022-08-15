@@ -1,4 +1,4 @@
-const { STRING, INTEGER } = require('sequelize').DataTypes;
+const { STRING, DATE, NOW } = require('sequelize').DataTypes;
 const { db } = require('../config/database');
 
 const { Movie } = require('./Movie');
@@ -8,7 +8,7 @@ const UserWatchlist = db.define(
   'UserWatchlist',
   {
     UserId: {
-      type: INTEGER,
+      type: STRING,
       references: {
         model: User,
         key: 'id',
@@ -23,15 +23,18 @@ const UserWatchlist = db.define(
       },
       primaryKey: true,
     },
-    historicalPosition: {
-      type: INTEGER,
-      autoIncrement: true,
+    addedAt: {
+      type: DATE,
+      defaultValue: NOW,
     },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+  }
 );
 
 Movie.belongsToMany(User, { through: UserWatchlist });
 User.belongsToMany(Movie, { through: UserWatchlist });
+User.hasMany(UserWatchlist);
 
 module.exports = { UserWatchlist };

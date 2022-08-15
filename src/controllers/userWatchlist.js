@@ -6,7 +6,7 @@ async function getUserWatchlist(req, res) {
   try {
     const userMovies = await User.findOne({
       where: { id: req.body.userData.id },
-      include: Movie,
+      include: [Movie, { model: UserWatchlist, attributes: ['addedAt'] }],
     });
     res.status(200).json({ userWatchlist: userMovies?.Movies || [] });
   } catch (e) {
@@ -18,8 +18,8 @@ async function addMovieToUserWatchlist(req, res) {
   try {
     const { id } = req.body.userData;
     const { movieId } = req.params;
-
     const existingMovie = await Movie.findByPk(movieId);
+
     const alreadyAdded = await UserWatchlist.findOne({
       where: { MovieId: movieId, UserId: id },
     });

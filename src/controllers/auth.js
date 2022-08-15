@@ -1,3 +1,4 @@
+const { v4: uuid } = require('uuid');
 const { User } = require('../models/User');
 const {
   encryptPassword,
@@ -7,7 +8,7 @@ const { sendEmail } = require('../utils/emailService');
 const { generateToken, getTokenData } = require('../config/jwt');
 
 async function sendConfirmationEmail({ id, email }) {
-  const emailToken = generateToken({ id }, '1h');
+  const emailToken = generateToken({ id });
   const url = `${process.env.API_BASE_URL}${process.env.API_CONFIRM_ACCOUNT_ENDPOINT}/${emailToken}`;
   const emailBody = `
   <html>
@@ -33,6 +34,7 @@ async function signup(req, res) {
     if (existingUser == null) {
       const newUser = await User.create({
         ...req.body,
+        id: uuid(),
         password: await encryptPassword(req.body.password),
       });
 
@@ -95,7 +97,6 @@ async function login(req, res) {
     } else {
       const token = generateToken({
         ...existingUser,
-        id: String(existingUser.id),
       });
       res.status(200).json({ username: existingUser.username, token });
     }

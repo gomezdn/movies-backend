@@ -1,5 +1,4 @@
 const Joi = require('@hapi/joi');
-const e = require('express');
 const { getTokenData } = require('../config/jwt');
 
 const signupSchema = new Joi.object({
@@ -22,6 +21,7 @@ async function validateToken(req, res, next) {
 
   try {
     req.body = { ...req.body, userData: await getTokenData(token) };
+
     next();
   } catch (e) {
     res.status(403).json({ message: e.message });
