@@ -8,7 +8,7 @@ const { sendEmail } = require('../utils/emailService');
 const { generateToken, getTokenData } = require('../config/jwt');
 
 async function sendConfirmationEmail({ id, email }) {
-  const emailToken = generateToken({ id });
+  const emailToken = generateToken({ dataValues: { id } });
   const url = `${process.env.API_BASE_URL}${process.env.API_CONFIRM_ACCOUNT_ENDPOINT}/${emailToken}`;
   const emailBody = `
   <html>
@@ -66,11 +66,15 @@ async function confirmAccount(req, res) {
     const { id } = await getTokenData(token);
     const existingUser = await User.findByPk(id);
 
-    if (existingUser != null) {
-      await existingUser.update({ activated: true });
-      res.status(200).json({ message: 'Account succesfully activated' });
-    } else {
+    if (existingUser == null) {
       res.status(404).json({ message: "Account doesn't exist" });
+    } else if (!existingUser.activated) {
+      await existingUser.update({ activated: true });
+      res.redirect(`${process.env.APP_LOGIN_URL}`);
+    } else {
+      res.send(
+        '<html> <h1 style="color: orange; font-family: sans">Account is already activated</h1> </html>'
+      );
     }
   } catch (e) {
     res.json(e.message);
